@@ -1076,9 +1076,21 @@ start revision."
       (insert it)
       t)))
 
-(defsubst git-gutter:start-raw-diff-process (proc-buf original now)
-  (start-file-process "git-gutter:update-timer" proc-buf
-                      "diff" "-U0" original now))
+(defvar git-gutter:raw-diff-process-switches '("-U0"))
+(defun git-gutter:start-raw-diff-process (proc-buf original now)
+  (apply #'start-file-process "git-gutter:update-timer" proc-buf
+         "diff" `(,@git-gutter:raw-diff-process-switches ,original ,now)))
+
+(defvar git-gutter:-show-space nil)  
+(defun git-gutter:toggle-space-view ()
+  (interactive)
+  (setq git-gutter:-show-space (not git-gutter:-show-space))
+  (setq git-gutter:raw-diff-process-switches
+        (if git-gutter:-show-space
+            (append
+             git-gutter:raw-diff-process-switches '("-w"))
+          (delete
+             "-w" git-gutter:raw-diff-process-switches))))
 
 (defun git-gutter:start-live-update (file original now)
   (let ((proc-bufname (git-gutter:diff-process-buffer file)))
