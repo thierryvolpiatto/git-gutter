@@ -1130,7 +1130,7 @@ start revision."
       (svn
        (when (zerop (process-file "svn" nil t nil "info"))
          (goto-char (point-min))
-         (when (re-search-forward "^Working Copy Root Path: \(.+\)$" nil t)
+         (when (re-search-forward "^Working Copy Root Path: \\(.+\\)$" nil t)
            (file-name-as-directory (match-string-no-properties 1)))))
       ((hg bzr)
        (let ((command (symbol-name vcs)))
